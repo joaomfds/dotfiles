@@ -1,0 +1,9 @@
+keymap:
+  - name: Vim_keys
+    remap:
+      ALT-h: Left
+      ALT-j: Down
+      ALT-k: Up
+      ALT-l: Right
+    device:
+      only: [/dev/input/event4]

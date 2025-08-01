@@ -1,0 +1,22 @@
+window {
+    background-color: 000000;
+    color: 000000;
+}
+
+list {
+    background: none;
+    border-radius: 15px
+}
+
+entry {
+    background-color: 000000
+}
+
+button {
+    background: none;
+    border: none
+}
+
+button:hover {
+    background-color: 000000
+}
