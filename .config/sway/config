@@ -1,6 +1,9 @@
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
 
+# Turn on autotiling
+exec autotiling
+
 # Home row direction keys, like vim
 set $left h
 set $down j
@@ -8,14 +11,12 @@ set $up k
 set $right l
 
 # Remap home/page keys to combinations using $mod+h/j/k/l and modifiers
-
 bindsym $mod+y exec wtype -k Prior      # Page Up key
 bindsym $mod+u exec wtype -k Home       # Home key
 bindsym $mod+i exec wtype -k End        # End key
 bindsym $mod+o exec wtype -k Next       # Page Down key
 
 # Example: remap home/page keys to combinations using $mod+h/j/k/l and modifiers
-
 bindsym $mod+ctrl+h exec 'wtype -k Left'
 bindsym $mod+ctrl+j exec 'wtype -k Down'
 bindsym $mod+ctrl+k exec 'wtype -k Up'
@@ -27,23 +28,22 @@ set $browser google-chrome-stable
 set $filemanager thunar
 
 ### Output configuration
-
 output * bg /usr/share/backgrounds/archlinux/wave.png fill
 output HDMI-A-1 resolution 1920x1080 position 1920,0
 
 exec swayidle -w \
-timeout 300 'swaylock -f -c 000000 -i /usr/share/backgrounds/archlinux/wave.png'\
-timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-before-sleep 'swaylock -f -c 000000 -i /usr/share/backgrounds/archlinux/wave.png'
+    timeout 300 'swaylock -f -c 000000 -i /usr/share/backgrounds/archlinux/wave.png'\
+    timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+    before-sleep 'swaylock -f -c 000000 -i /usr/share/backgrounds/archlinux/wave.png'
 
 input type:touchpad {
-dwt enabled
-tap enabled
-natural_scroll enabled
-middle_emulation enabled
+    dwt enabled
+    tap enabled
+    natural_scroll enabled
+    middle_emulation enabled
 }
 input type:keyboard {
-xkb_layout "eu"
+    xkb_layout "eu"
 }
 
 ### Key bindings
@@ -150,15 +150,16 @@ bindsym $mod+minus scratchpad show
 
 # Resizing containers:
 mode "resize" {
-bindsym $left resize shrink width 10px
-bindsym $down resize grow height 10px
-bindsym $up resize shrink height 10px
-bindsym $right resize grow width 10px
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
 # Ditto, with arrow keys (REMOVED ARROW KEY BINDS)
 # Return to default mode
-bindsym Return mode "default"
-bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
 }
+
 bindsym $mod+r mode "resize"
 
 # Utilities:
