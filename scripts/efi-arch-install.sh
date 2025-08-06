@@ -54,11 +54,11 @@ mount --mkdir $EFI_PART /mnt/boot
 
 # Install base system
 pacstrap -c /mnt base linux linux-firmware-intel sudo nano grub efibootmgr intel-media-driver intel-gpu-tools \
-dosfstools btrfs-progs archinstall base-devel network-manager-applet thermald btop fastfetch git eza fd jq \
-ripgrep yazi bash-completion starship zoxide bat fzf man-db man-pages reflector wireplumber pipewire-pulse \
-pipewire-jack otf-font-awesome noto-fonts ttf-hack archlinux-wallpaper tlp xdg-user-dirs stress pkgfile \
+dosfstools btrfs-progs archinstall base-devel network-manager-applet thermald btop fastfetch git eza fd jq duf \
+ripgrep yazi bash-completion starship zoxide bat fzf man-db man-pages reflector wireplumber pipewire-pulse rtkit\
+pipewire-jack otf-font-awesome noto-fonts ttf-hack archlinux-wallpaper tlp xdg-user-dirs stress pkgfile stow\
 gst-libav gst-plugin-va gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly \
-hyprland foot wofi waybar
+hyprland foot wofi waybar hyprlock hypridle hyprpicker mako pavucontrol blueman thunar thunar-volman gvfs ristretto mousepad nwg-drawer nwg-look wmctrl brightnessctl qt5ct qt6ct hyprpolkitagent breeze-icons breeze-gtk
 
 #sway swaybg swaylock swayidle foot blueman brightnessctl pavucontrol waybar autotiling wofi xorg-xwayland
 #qt6ct breeze-icons breeze-gtk kvantum
@@ -104,13 +104,13 @@ arch-chroot /mnt pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-au
 CHAOTIC_AUR="[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist"
 echo -e "$CHAOTIC_AUR" | sudo tee -a /mnt/etc/pacman.conf > /dev/null
 arch-chroot /mnt pacman -Syuu --noconfirm
-#pacstrap -c /mnt octopi yay stremio google-chrome
+pacstrap -c /mnt octopi yay stremio google-chrome libinput-gestures
 
 echo "Chaotic AUR repository added to /etc/pacman.conf"
 
 # Enable services
-#arch-chroot /mnt systemctl enable NetworkManager tlp bluetooth
-
+arch-chroot /mnt systemctl enable NetworkManager tlp bluetooth rtkit-daemon
+arch-chroot /mnt usermod -aG input $USERNAME
 arch-chroot /mnt bash -c "echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
 
 # Setup dotfiles
