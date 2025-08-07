@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-reflector --threads 10 -c Germany --fastest 3 -p http --sort rate --save /etc/pacman.d/mirrorlist
+reflector --threads 10 -c Austria --fastest 1 -p http --sort rate --save /etc/pacman.d/mirrorlist
 
 sed -i '/ParallelDownloads/c\ParallelDownloads = 50' /etc/pacman.conf
 # Partition, format and mount
@@ -21,12 +21,13 @@ mount --mkdir /dev/sdb1 /mnt/boot
 mount --mkdir /dev/sda1 /mnt/home
 
 # Install base system
-pacstrap -c /mnt base linux linux-firmware-intel sudo nano grub efibootmgr intel-media-driver intel-gpu-tools \
+pacstrap  /mnt base linux linux-firmware-intel sudo nano grub efibootmgr intel-media-driver intel-gpu-tools \
 dosfstools btrfs-progs archinstall base-devel network-manager-applet thermald btop fastfetch git eza fd jq duf \
-ripgrep yazi bash-completion starship zoxide bat fzf man-db man-pages reflector wireplumber pipewire-pulse rtkit\
-pipewire-jack otf-font-awesome noto-fonts ttf-hack archlinux-wallpaper tlp xdg-user-dirs stress pkgfile stow\
-gst-libav gst-plugin-va gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly \
-hyprland foot wofi waybar hyprlock hypridle hyprpicker mako pavucontrol blueman thunar thunar-volman gvfs ristretto mousepad nwg-drawer nwg-look wmctrl brightnessctl qt5ct qt6ct hyprpolkitagent breeze-icons breeze-gtk
+ripgrep yazi bash-completion starship zoxide bat fzf man-db man-pages reflector wireplumber pipewire-pulse rtkit \
+pipewire-jack otf-font-awesome noto-fonts ttf-hack archlinux-wallpaper tlp xdg-user-dirs stress pkgfile stow \
+gst-libav gst-plugin-va gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly ncdu \
+hyprland foot wofi waybar hyprlock hypridle hyprpicker mako pavucontrol blueman thunar thunar-volman gvfs \
+ristretto mousepad nwg-drawer nwg-look wmctrl brightnessctl qt5ct qt6ct hyprpolkitagent breeze-icons breeze-gtk
 
 sed -i "s/'fallback'//g" /mnt/etc/mkinitcpio.d/linux.preset
 
@@ -45,10 +46,9 @@ echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
 echo "archlinux" > /mnt/etc/hostname
 
 # Set root password
-echo "root:$ROOT_PASS" | arch-chroot /mnt chpasswd
+echo "root:root" | arch-chroot /mnt chpasswd
 
 # Install bootloader
-#arch-chroot /mnt pacman --noconfirm -S grub efibootmgr
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Archlinux
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX=/ {s/"$/modprobe.blacklist=nvidia,nvidia_modeset,nvidia_drm,nvidia_uvm,nouveau mitigations=off quiet splash"/;}' /etc/default/grub
@@ -66,18 +66,17 @@ arch-chroot /mnt pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-au
 CHAOTIC_AUR="[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist"
 echo -e "$CHAOTIC_AUR" | sudo tee -a /mnt/etc/pacman.conf > /dev/null
 arch-chroot /mnt pacman -Syuu --noconfirm
-pacstrap -c /mnt octopi yay stremio google-chrome libinput-gestures
+pacstrap /mnt octopi yay stremio google-chrome libinput-gestures
 
 echo "Chaotic AUR repository added to /etc/pacman.conf"
 
 # Enable services
 arch-chroot /mnt systemctl enable NetworkManager tlp bluetooth rtkit-daemon
-arch-chroot /mnt usermod -aG input $USERNAME
 arch-chroot /mnt bash -c "echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
 
 # Create new user and set password
-arch-chroot /mnt useradd -m -G wheel -s /bin/bash "$USERNAME"
-echo "$USERNAME:$USER_PASS" | arch-chroot /mnt chpasswd
+arch-chroot /mnt useradd -m -G wheel,input -s /bin/bash user
+echo user:user | arch-chroot /mnt chpasswd
 
 # Update tlp.conf
 echo "CPU_ENERGY_PERF_POLICY_ON_AC=balance_performance" >> /mnt/etc/tlp.d/01-powersave.conf
@@ -85,4 +84,3 @@ echo "CPU_ENERGY_PERF_POLICY_ON_BAT=balance_power" >> /mnt/etc/tlp.d/01-powersav
 echo "STOP_CHARGE_THRESH_BAT0=80" >> /mnt/etc/tlp.d/02-battery_protection.conf
 
 echo "Installation complete! Reboot to use your new system."
-
