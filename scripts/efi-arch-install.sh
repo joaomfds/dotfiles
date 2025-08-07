@@ -5,20 +5,16 @@ reflector --threads 10 -c Austria --fastest 1 -p http --sort rate --save /etc/pa
 
 sed -i '/ParallelDownloads/c\ParallelDownloads = 50' /etc/pacman.conf
 # Partition, format and mount
-parted -s /dev/sda mklabel gpt
 parted -s /dev/sdb mklabel gpt
 parted -s /dev/sdb mkpart primary fat32 1MiB 512MiB
 parted -s /dev/sdb set 1 esp on
 parted -s /dev/sdb mkpart primary btrfs 512MiB 100%
-parted -s /dev/sda mkpart primary btrfs 1MiB 100%
 
 mkfs.fat -F32 /dev/sdb1
 mkfs.btrfs -f /dev/sdb2
-mkfs.btrfs -f /dev/sda1
 
 mount /dev/sdb2 /mnt
 mount --mkdir /dev/sdb1 /mnt/boot
-mount --mkdir /dev/sda1 /mnt/home
 
 # Install base system
 pacstrap  /mnt base linux linux-firmware-intel sudo nano grub efibootmgr intel-media-driver intel-gpu-tools \
